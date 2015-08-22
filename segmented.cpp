@@ -51,7 +51,7 @@ int main()	{
 	printf("Enter points in the format x y on each line:\n");
 	N = 0;
   i = 0;
-	
+
 	while (true) {
 		int result = scanf("%d %d", &points[i].x, &points[i].y);
 		if ( 2 != result ) {
@@ -123,8 +123,8 @@ int main()	{
 	while (!segments.empty())	{
 		i = segments.top(); segments.pop();
 		j = segments.top(); segments.pop();
-		printf("Segment (y = %lf * x + %lf) from points %d %d to %d %d with square error %lf.\n",
-				slope[i][j], intercept[i][j], i, points[i].y, j, points[j].y, E[i][j]);
+		printf("Segment (y = %lf * x + %lf) from point #%d: %d %d to point #%d: %d %d with square error %lf.\n",
+				slope[i][j], intercept[i][j], i, points[i].x, points[i].y, j, points[j].x, points[j].y, E[i][j]);
 	}
 
 	return 0;
