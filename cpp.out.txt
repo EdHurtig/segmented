@@ -1,0 +1,8 @@
+Enter the cost of creating a new segment
+Enter points in the format x y on each line:
+Got 14 points
+Cost of the optimal solution : 525.433333
+
+An optimal solution :
+Segment (y = 1.033333 * x + -0.533333) from point #1: 2 2 to point #9: 10 15 with square error 57.933333.
+Segment (y = 0.500000 * x + 24.500000) from point #10: 11 25 to point #14: 15 30 with square error 67.500000.

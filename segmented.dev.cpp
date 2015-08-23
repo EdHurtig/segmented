@@ -45,7 +45,7 @@ int main()	{
 	long long x_sum, y_sum, xy_sum, xsqr_sum, num, denom;
 	double tmp, mn, C;
 
-	printf("Enter the cost of creating a new segment\n");
+	printf("Enter the cost of creating a new segment : ");
 	scanf("%lf", &C);
 
 	printf("Enter points in the format x y on each line:\n");
@@ -54,28 +54,32 @@ int main()	{
 
 	while (true) {
 		i++;
-
-		Point p;
-		int result = scanf("%d %d", &p.x, &p.y);
+		int result = scanf("%d %d", &points[i].x, &points[i].y);
 		if ( 2 != result ) {
 			break;
 		}
-		points[i] = p;
-
 		N++;
+
 	}
 	printf("Got %d points\n", N);
 
 	// sort the points in non-decreasing order of x coordinate
-//	sort (points + 1, points + N + 1);
+	sort (points + 1, points + N + 1);
 
 	// precompute the error terms
 	cumulative_x[0] = cumulative_y[0] = cumulative_xy[0] = cumulative_xSqr[0] = 0;
 	for (j = 1; j <= N; j++)	{
 		cumulative_x[j] = cumulative_x[j-1] + points[j].x;
+		printf("Set cumulative_x[%d] to %d\n", j, cumulative_x[j]);
+
 		cumulative_y[j] = cumulative_y[j-1] + points[j].y;
+		printf("Set cumulative_y[%d] to %d\n", j, cumulative_y[j]);
+
 		cumulative_xy[j] = cumulative_xy[j-1] + points[j].x * points[j].y;
+		printf("Set cumulative_xy[%d] to %d\n", j, cumulative_xy[j]);
+
 		cumulative_xSqr[j] = cumulative_xSqr[j-1] + points[j].x * points[j].x;
+		printf("Set cumulative_xSqr[%d] to %d\n", j, cumulative_xSqr[j]);
 
 		for (i = 1; i <= j; i++)	{
 			interval = j - i + 1;
@@ -85,7 +89,8 @@ int main()	{
 			xsqr_sum = cumulative_xSqr[j] - cumulative_xSqr[i-1];
 
 			num = interval * xy_sum - x_sum * y_sum;
-			// printf("The Num is %lld, the j is %d, the i is %d: %d, %lld, %lld, %lld, %lld\n", num, j, i, interval, xy_sum, x_sum, y_sum, xsqr_sum);
+
+			printf("The Num is %d, the j is %d, the i is %d: %d, %d, %d, %d\n", num, j, i, interval, xy_sum, x_sum, y_sum);
 
 			if (num == 0)
 				slope[i][j] = 0.0;
@@ -95,9 +100,12 @@ int main()	{
 			}
 			intercept[i][j] = (y_sum - slope[i][j] * x_sum) / double(interval);
 
+			printf("Setting intercept[i][j] to %f\n", intercept[i][j]);
+
 			for (k = i, E[i][j] = 0.0; k <= j; k++)	{
 				tmp = points[k].y - slope[i][j] * points[k].x - intercept[i][j];
 				E[i][j] += tmp * tmp;
+				printf("Setting E[i][j] to %f\n", E[i][j]);
 			}
 		}
 	}
@@ -113,16 +121,19 @@ int main()	{
 			}
 		}
 		OPT[j] = mn + C;
+		printf("Setting OPT[j] to %f\n", OPT[j]);
 		opt_segment[j] = k;
-
+		printf("Setting opt_segment[j] to %d\n", opt_segment[j]);
 	}
 
-	printf("Cost of the optimal solution : %lf\n", OPT[N]);
+	printf("\nCost of the optimal solution : %lf\n", OPT[N]);
 
 	// find the optimal solution
 	stack <int> segments;
 	for (i = N, j = opt_segment[N]; i > 0; i = j-1, j = opt_segment[i])	{
+		printf("Pushing %d\n", i);
 		segments.push(i);
+		printf("Pushing %d\n", j);
 		segments.push(j);
 	}
 
@@ -130,6 +141,14 @@ int main()	{
 	while (!segments.empty())	{
 		i = segments.top(); segments.pop();
 		j = segments.top(); segments.pop();
+
+		printf("i is %d, j is %d\n", i, j);
+		int t,s;
+		for (t=0; t < 3; t++) {
+			for (s=0; s < 3; s++) {
+				printf("Intercepts at [%d][%d] is %f\n", t, s, intercept[t][s]);
+			}
+		}
 
 		printf("Segment (y = %lf * x + %lf) from point #%d: %d %d to point #%d: %d %d with square error %lf.\n",
 				slope[i][j], intercept[i][j], i, points[i].x, points[i].y, j, points[j].x, points[j].y, E[i][j]);

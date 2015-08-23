@@ -1,0 +1,17 @@
+
+for f in test*.txt; do
+	echo -e "\e[96mRunning Test File $f"
+
+	g++ segmented.cpp && cat $f | ./a.out > cpp.out.txt
+
+	cat $f | python segmented.py > py.out.txt
+
+	colordiff py.out.txt cpp.out.txt
+
+	if [ $? != 0 ]; then
+		echo -e "\033[31mTest $f FAILED\e[0m"
+	else
+		echo -e "\e[32mTest $f PASSED"
+	fi
+
+done
